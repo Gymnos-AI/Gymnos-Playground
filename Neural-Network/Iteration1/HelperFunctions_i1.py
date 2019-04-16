@@ -67,7 +67,7 @@ def standardize_file_names(source):
         os.rename(video_list[i], 'video'+ str(i) + '.MOV')
 
         
-def generate_labels_csv(csv_location):
+def generate_labels_csv(csv_location, *args):
     """
     Generates a Labels CSV
 
@@ -76,6 +76,11 @@ def generate_labels_csv(csv_location):
     Parameters
     ---------
     csv_location: Location to store the generated csv
+
+    *args: Total size of each class. Order each class in the order you would like them to be labeled as.
+    Ex) Squats (class 0) = 400, Bench (class 1) = 600
+    generate_labels_csv(location, 400, 600)
+
     """
     os.chdir(csv_location) # Navigate into the right directory
 
@@ -85,14 +90,18 @@ def generate_labels_csv(csv_location):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
 
-        # Write into the CSV the frames with their associated class
-        for i in range(0, 1935):
-            writer.writerow({'Frame_ID': 'frame'+str(i)+'.jpg', 'Class': '0'})
+        count = 0
+        label = 0
+        for classes in args:
+            # Write into the CSV the frames with their associated class
+            for i in range(count, classes):
+                writer.writerow({'Frame_ID': 'frame' + str(i) + '.jpg', 'Class': label})
 
-        for i in range(1935, 4431):
-            writer.writerow({'Frame_ID': 'frame'+str(i)+'.jpg', 'Class': '1'})
+            # Increment label and count
+            count = classes
+            label += 1
 
-            
+
 def generate_partitions_csv(csv_location, labels_csv):
     """
     Generates a Partitions CSV
