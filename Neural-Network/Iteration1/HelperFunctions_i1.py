@@ -8,7 +8,7 @@ import numpy as np
 import os
 
 
-def extractFramesFromDirectory(count, source, destination):
+def extract_frames_from_directory(count, source, destination):
     """ 
     Extracts Frames from a directory of videos and stores them in a specified destination directory
 
@@ -25,21 +25,19 @@ def extractFramesFromDirectory(count, source, destination):
     print(all_videos)
 
     for video in all_videos:
-        videoFile = source + video # Retrieve a video from the OverHeadPress
-        cap = cv2.VideoCapture(videoFile)   # capturing the video from the given path
-        frameRate = cap.get(cv2.CAP_PROP_FPS) # Frame rate
+        video_file = source + video # Retrieve a video from the OverHeadPress
+        cap = cv2.VideoCapture(video_file)   # capturing the video from the given path
+        dim = (224, 224)
 
-        x=1
-        dim = (224,224)
         while(cap.isOpened()):
-            frameId = cap.get(1) #current frame number
+            frame_id = cap.get(1)  #current frame number
             ret, frame = cap.read()
             if (ret != True):
                 break
 
             # We are capturing at 28 frames per second. 
             # If we want to capture every 0.2 seconds we will take every 5 frames
-            if (frameId % 8 == 0):
+            if (frame_id % 8 == 0):
                 filename ="frame%d.jpg" % count
                 count+=1
                 resized = cv2.resize(frame, dim)
@@ -49,7 +47,7 @@ def extractFramesFromDirectory(count, source, destination):
         print ("Finished processing: " + video + ". Ended at video: " + str(count))
 
         
-def standardizeFileNames(source):
+def standardize_file_names(source):
     """
     Modifys a directorys files to be named in an incremental fashion
 
@@ -69,7 +67,7 @@ def standardizeFileNames(source):
         os.rename(video_list[i], 'video'+ str(i) + '.MOV')
 
         
-def generateLabelsCsv(csv_location):
+def generate_labels_csv(csv_location):
     """
     Generates a Labels CSV
 
@@ -95,7 +93,7 @@ def generateLabelsCsv(csv_location):
             writer.writerow({'Frame_ID': 'frame'+str(i)+'.jpg', 'Class': '1'})
 
             
-def generatePartitionsCsv(csv_location, labels_csv):
+def generate_partitions_csv(csv_location, labels_csv):
     """
     Generates a Partitions CSV
 
@@ -150,7 +148,7 @@ def generatePartitionsCsv(csv_location, labels_csv):
         writer.writerow({'Partition': 'test', 'Dataset': test})
 
 
-def readLabelsCsv(source):
+def read_labels_csv(source):
     """
     Returns a dictionary of Labels and their classes
 
@@ -174,7 +172,7 @@ def readLabelsCsv(source):
     return labels
 
   
-def readPartitionCsv(source):
+def read_partition_csv(source):
     """
     Returns a dictionary of partitions and the frames in each partition
 
