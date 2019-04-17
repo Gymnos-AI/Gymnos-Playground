@@ -36,7 +36,7 @@ class DataGenerator(Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = img_to_array(plt.imread(self.data_location + ID))
+            X[i,] = np.rot90(img_to_array(plt.imread(self.data_location + ID)), 3) # Rotate image 3 times to the left to have it standing up right
             
             # Store class
             y[i] = self.labels[ID]
