@@ -11,14 +11,14 @@ import os
 def extract_frames_from_directory(count, source, destination):
     """ 
     Extracts Frames from a directory of videos and stores them in a specified destination directory
-
+    
     Parameters
     ---------
     count: Last proccessed frame number
     ex) count = 20, then the first processed frame will be frame20.jpg and they will be incremented from there
-
+    
     source: Source Folder of videos to process
-
+    
     destination: Destination Folder where frames are stored in
     """
     all_videos = os.listdir(source)
@@ -50,7 +50,6 @@ def extract_frames_from_directory(count, source, destination):
 def standardize_file_names(source):
     """
     Modifys a directorys files to be named in an incremental fashion
-
     Ex) source: video1, video2, video3
     
     Parameters
@@ -70,17 +69,16 @@ def standardize_file_names(source):
 def generate_labels_csv(csv_location, *args):
     """
     Generates a Labels CSV
-
     Ex) {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
     
     Parameters
     ---------
     csv_location: Location to store the generated csv
-
+    
     *args: Total size of each class. Order each class in the order you would like them to be labeled as.
     Ex) Squats (class 0) = 400, Bench (class 1) = 600
+    
     generate_labels_csv(location, 400, 600)
-
     """
     os.chdir(csv_location) # Navigate into the right directory
 
@@ -105,15 +103,16 @@ def generate_labels_csv(csv_location, *args):
 def generate_partitions_csv(csv_location, labels_csv):
     """
     Generates a Partitions CSV
-
     Ex) {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
     
     Parameters
     ---------
     csv_location: Location to store the generated csv
-
+    
     labels_csv: Location of Labels CSV which we will use to generate partitions
     """
+    os.chdir(csv_location) # Navigate into the right directory
+    
     # Initialize dictionaries for storting metadata of the dataset
     count = 0         # Counts the current frame we are on
     train = []
@@ -160,13 +159,12 @@ def generate_partitions_csv(csv_location, labels_csv):
 def read_labels_csv(source):
     """
     Returns a dictionary of Labels and their classes
-
     Ex) {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
     
     Parameters
     ---------
     source: Location of the labels CSV
-
+    
     Returns
     ---------
     labels: {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
@@ -184,13 +182,12 @@ def read_labels_csv(source):
 def read_partition_csv(source):
     """
     Returns a dictionary of partitions and the frames in each partition
-
     Ex) {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
     
     Parameters
     ---------
     source: Location of the partitions CSV
-
+    
     Returns
     ---------
     partition: {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
@@ -209,13 +206,13 @@ def read_partition_csv(source):
 def show_images(images, cols=1, titles=None):
     """
     Display a list of images in a single figure with matplotlib.
-
+    
     Parameters
     ---------
     images: List of np.arrays compatible with plt.imshow.
-
+    
     cols (Default = 1): Number of columns in figure (number of rows is set to np.ceil(n_images/float(cols))).
-
+    
     titles: List of titles corresponding to each image. Must have the same length as titles.
     """
     assert((titles is None)or (len(images) == len(titles)))
