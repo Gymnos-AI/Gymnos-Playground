@@ -8,45 +8,6 @@ import numpy as np
 import os
 
 
-def extract_frames_from_directory(count, source, destination):
-    """ 
-    Extracts Frames from a directory of videos and stores them in a specified destination directory
-    
-    Parameters
-    ---------
-    count: Last proccessed frame number
-    ex) count = 20, then the first processed frame will be frame20.jpg and they will be incremented from there
-    
-    source: Source Folder of videos to process
-    
-    destination: Destination Folder where frames are stored in
-    """
-    all_videos = os.listdir(source)
-    print(all_videos)
-
-    for video in all_videos:
-        video_file = source + video # Retrieve a video from the OverHeadPress
-        cap = cv2.VideoCapture(video_file)   # capturing the video from the given path
-        dim = (224, 224)
-
-        while(cap.isOpened()):
-            frame_id = cap.get(1)  #current frame number
-            ret, frame = cap.read()
-            if (ret != True):
-                break
-
-            # We are capturing at 28 frames per second. 
-            # If we want to capture every 0.2 seconds we will take every 5 frames
-            if (frame_id % 8 == 0):
-                filename ="frame%d.jpg" % count
-                count+=1
-                resized = cv2.resize(frame, dim)
-                cv2.imwrite(destination + filename, resized)
-
-        cap.release()
-        print ("Finished processing: " + video + ". Ended at video: " + str(count))
-
-        
 def standardize_file_names(source):
     """
     Modifys a directorys files to be named in an incremental fashion
