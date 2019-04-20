@@ -52,8 +52,8 @@ _________________________________________________________________
 ### What I need to improve
 * Change picture dimensions to 256x256 to optimize data for TPU
 * Design a new approach for extracting frames from a directory. Specifically:
- * Do not extract frames from videos and store them in a seperate folder. It adds a useless step to the process and it uses up space for no reason
- * Figure out why the image comes in sideways (timebox this to 1 hour)
+  * Do not extract frames from videos and store them in a seperate folder. It adds a useless step to the process and it uses up space for no reason
+  * Figure out why the image comes in sideways (timebox this to 1 hour)
 * The above step will probably force me to update how I generate labels and partitions. 
 * Use TensorBoard for this iteration
 * Fix the TPU unsupported operations (timebox this to 2 hours)
