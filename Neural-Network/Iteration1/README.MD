@@ -47,6 +47,10 @@ _________________________________________________________________
  * TPU: Couldn't even run it on there.. 
 
 ### Evaluating the model
-* Was able to get to a 100% accuracy but that's cap. Reason being is although it did not any of the frames from the test set. It did see a frame from the same video which will help it alot.
+* Was able to get to a 100% accuracy but that's cap. Reason being is although it did not see any of the frames from the test set. It did see a frame from the same video which will help it alot.
 
 ### What I need to improve
+* Change picture dimensions to 256x256 to optimize data for TPU
+* Design a new approach for extracting frames from a directory. Specifically:
+ * Do not extract frames from videos and store them in a seperate folder. It adds a useless step to the process and it uses up space for no reason
+* The above step will probably force me to update how I generate labels and partitions. 
