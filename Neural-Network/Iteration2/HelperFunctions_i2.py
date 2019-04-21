@@ -1,5 +1,5 @@
-import cv2                       # for capturing videos
-import math                      # for mathematical operations
+import cv2  # for capturing videos
+import math  # for mathematical operations
 import matplotlib.pyplot as plt  # for plotting the images
 import csv
 import pandas as pd
@@ -12,7 +12,7 @@ def standardize_file_names(source):
     """
     Modifys a directorys files to be named in an incremental fashion
     Ex) source: video1, video2, video3
-    
+
     Parameters
     ---------
     source: Source Folder of videos to process
@@ -20,62 +20,69 @@ def standardize_file_names(source):
     # Convert File Names into a List
     video_list = os.listdir(source)
     print(video_list)
-    
+
     # Switch into the Directory and rename all files
     os.chdir(source)
     for i in range(len(video_list)):
-        os.rename(video_list[i], 'video'+ str(i) + '.MOV')
+        os.rename(video_list[i], 'video' + str(i) + '.MOV')
 
-        
-def generate_labels_csv(csv_location, *args):
+
+def init_labels_csv(csv_location):
     """
-    Generates a Labels CSV
-    Ex) {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
-    
+    Initializes the labels csv file in the path given.
+
     Parameters
     ---------
-    csv_location: Location to store the generated csv
-    
-    *args: Total size of each class. Order each class in the order you would like them to be labeled as.
-    Ex) Squats (class 0) = 400, Bench (class 1) = 600
-    
-    generate_labels_csv(location, 400, 600)
+    csv_location: Location to create csv file
+    ex) /content/drive/My Drive/GYMNOS/Video Dataset/labels.csv
     """
-    os.chdir(csv_location) # Navigate into the right directory
-
-    # Initilize and open the Labels csv
-    with open('labels.csv', mode='w') as csv_file:
-        fieldnames = ['Frame_ID', 'Class']
+    # Initilize the Csv we will store our labels
+    with open(csv_location, mode='w') as csv_file:
+        fieldnames = ['Video_ID', 'Class']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
 
-        count = 0
-        label = 0
-        for classes in args:
-            # Write into the CSV the frames with their associated class
-            for i in range(count, classes):
-                writer.writerow({'Frame_ID': 'frame' + str(i) + '.jpg', 'Class': label})
 
-            # Increment label and count
-            count = classes
-            label += 1
+def append_to_labels_csv(csv_location, data_path, class_number):
+    """
+    Appends data points to the Labels CSV
+    Ex) {'/path/file1': 0, '/path/file2': 1, '/path/file3': 2, '/path/file4': 1}
+
+    Parameters
+    ---------
+    csv_location: Location of the csv labels cvs
+
+    data_path: Path to data you want to label
+
+    class_number: Label you would like to give each data point in the Path
+    """
+    # Initilize the Csv we will store our labels
+    videos = []
+    for vid in os.listdir(data_path):
+        videos.append(data_path + vid)
+
+    with open(csv_location, mode='a') as csv_file:
+        fieldnames = ['Video_ID', 'Class']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        for video in videos:
+            writer.writerow({'Video_ID': video, 'Class': class_number})
 
 
 def generate_partitions_csv(csv_location, labels_csv):
     """
     Generates a Partitions CSV
     Ex) {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
-    
+
     Parameters
     ---------
     csv_location: Location to store the generated csv
-    
+
     labels_csv: Location of Labels CSV which we will use to generate partitions
     """
-    os.chdir(csv_location) # Navigate into the right directory
-    
+    os.chdir(csv_location)  # Navigate into the right directory
+
     # Initialize dictionaries for storting metadata of the dataset
-    count = 0         # Counts the current frame we are on
+    count = 0  # Counts the current frame we are on
     train = []
     validation = []
     test = []
@@ -83,20 +90,20 @@ def generate_partitions_csv(csv_location, labels_csv):
     # Read in the Labels csv
     data = pd.read_csv(labels_csv)
 
-    # Shuffle the data and 
+    # Shuffle the data and
     data = shuffle(data)
 
     # Break the data into Partitions for train, validation and test
     dataset_size = len(data)
-    training_size = math.floor(dataset_size * 0.70)    # 70% frames are for training
+    training_size = math.floor(dataset_size * 0.70)  # 70% frames are for training
     validation_size = math.floor(dataset_size * 0.20)  # 20% are for validation
 
     for index, frames in data.iterrows():
-        if count < training_size:  
+        if count < training_size:
             train.append(frames.Frame_ID)
-        elif count < (training_size + validation_size):                 
+        elif count < (training_size + validation_size):
             validation.append(frames.Frame_ID)
-        else:                                 # 10% are for testing
+        else:  # 10% are for testing
             test.append(frames.Frame_ID)
 
         count += 1
@@ -121,11 +128,11 @@ def read_labels_csv(source):
     """
     Returns a dictionary of Labels and their classes
     Ex) {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
-    
+
     Parameters
     ---------
     source: Location of the labels CSV
-    
+
     Returns
     ---------
     labels: {'id-1': 0, 'id-2': 1, 'id-3': 2, 'id-4': 1}
@@ -136,19 +143,19 @@ def read_labels_csv(source):
         csv_reader = csv.DictReader(labels_csv)
         for row in csv_reader:
             labels[row["Frame_ID"]] = row["Class"]
-    
+
     return labels
 
-  
+
 def read_partition_csv(source):
     """
     Returns a dictionary of partitions and the frames in each partition
     Ex) {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
-    
+
     Parameters
     ---------
     source: Location of the partitions CSV
-    
+
     Returns
     ---------
     partition: {'train': ['id-1', 'id-2', 'id-3'], 'validation': ['id-4']}
@@ -160,28 +167,28 @@ def read_partition_csv(source):
         for row in csv_reader:
             dataset_as_string = row["Dataset"]  # Returns Row as a String
             partition[row["Partition"]] = dataset_as_string[2:-2].split("', '")
-    
+
     return partition
 
-  
+
 def show_images(images, cols=1, titles=None):
     """
     Display a list of images in a single figure with matplotlib.
-    
+
     Parameters
     ---------
     images: List of np.arrays compatible with plt.imshow.
-    
+
     cols (Default = 1): Number of columns in figure (number of rows is set to np.ceil(n_images/float(cols))).
-    
+
     titles: List of titles corresponding to each image. Must have the same length as titles.
     """
-    assert((titles is None)or (len(images) == len(titles)))
+    assert ((titles is None) or (len(images) == len(titles)))
     n_images = len(images)
-    if titles is None: titles = ['Image (%d)' % i for i in range(1,n_images + 1)]
+    if titles is None: titles = ['Image (%d)' % i for i in range(1, n_images + 1)]
     fig = plt.figure()
     for n, (image, title) in enumerate(zip(images, titles)):
-        a = fig.add_subplot(cols, np.ceil(n_images/float(cols)), n + 1)
+        a = fig.add_subplot(cols, np.ceil(n_images / float(cols)), n + 1)
         if image.ndim == 2:
             plt.gray()
         plt.imshow(image)
