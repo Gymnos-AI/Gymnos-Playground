@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.utils import shuffle
 import csv
+import cv2
 import keras
 from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
@@ -8,28 +9,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from tensorflow.python.keras.utils.data_utils import Sequence
+from random import randint
 
 
 class DataGenerator(Sequence):
-    def __init__(self, list_IDs, labels, data_location, batch_size=32, dim=(32,32,32), n_classes=2, shuffle=True):
+    def __init__(self, list_IDs, labels, frames_per_video, frame_dim, batch_size, n_classes, shuffle=True):
         """
-        Initialization
+          Initialization
 
-        :param list_IDs:
-        :param labels:
-        :param data_location:
-        :param batch_size:
-        :param dim:
-        :param n_classes:
-        :param shuffle:
-        """
-        self.dim = dim
-        self.batch_size = batch_size
-        self.labels = labels
+          :param list_IDs:
+          :param labels:
+          :param frames_per_video:
+          :param frame_dim:
+          :param batch_size:
+          :param n_classes:
+          :param shuffle:
+          """
         self.list_IDs = list_IDs
+        self.labels = labels
+        self.frames_per_video = frames_per_video
+        self.frame_dim = frame_dim
+        self.batch_size = batch_size
         self.n_classes = n_classes
         self.shuffle = shuffle
-        self.data_location = data_location
         self.on_epoch_end()
 
     def on_epoch_end(self):
@@ -55,11 +57,11 @@ class DataGenerator(Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = np.rot90(img_to_array(plt.imread(self.data_location + ID)), 3) # Rotate image 3 times to the left to have it standing up right
-            
+            X[i,] = extract_frames_from_video(ID)
+
             # Store class
             y[i] = self.labels[ID]
-        
+
         return preprocess_input(X, mode='tf'), keras.utils.to_categorical(y, num_classes=self.n_classes)
 
     def __len__(self):
@@ -78,44 +80,47 @@ class DataGenerator(Sequence):
         :param index:
         :return:
         """
-        X, y = self.__data_generation(self.list_IDs[index*self.batch_size:(index+1)*self.batch_size])
+        X, y = self.__data_generation(self.list_IDs[index * self.batch_size:(index + 1) * self.batch_size])
 
         return X, y
 
-    def extract_frames_from_directory(self, count, source, destination):
+    def extract_frames_from_directory(self, source):
         """
-        Extracts Frames from a directory of videos and stores them in a specified destination directory
+        Extracts frames from a video
 
         Parameters
         ---------
-        count: Last proccessed frame number
-        ex) count = 20, then the first processed frame will be frame20.jpg and they will be incremented from there
+        source: The video we would like to retrieve frames from
 
-        source: Source Folder of videos to process
-
-        destination: Destination Folder where frames are stored in
+        Returns
+        ---------
+        video_frames: Frames from the video that was passed in
         """
-        all_videos = os.listdir(source)
-        print(all_videos)
+        video_frames = []
 
-        for video in all_videos:
-            video_file = source + video  # Retrieve a video from the OverHeadPress
-            cap = cv2.VideoCapture(video_file)  # capturing the video from the given path
-            dim = (256, 256)
+        cap = cv2.VideoCapture(source)  # capturing the video from the given path
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-            while (cap.isOpened()):
-                frame_id = cap.get(1)  # current frame number
-                ret, frame = cap.read()
-                if (ret != True):
-                    break
+        pos = randint(0, length - 140)
+        cap.set(1, pos);
 
-                # We are capturing at 28 frames per second.
-                # If we want to capture every 0.2 seconds we will take every 5 frames
-                if (frame_id % 8 == 0):
-                    filename = "frame%d.jpg" % count
-                    count += 1
-                    resized = cv2.resize(frame, dim)
-                    cv2.imwrite(destination + filename, resized)
+        frames_to_extract = self.frames_per_video
+        frame_dim = self.frame_dim
 
-            cap.release()
-            print("Finished processing: " + video + ". Ended at video: " + str(count))
+        # Pull franes from videos until we have reached the amount we want to extract
+        while (cap.isOpened() and len(video_frames) < frames_to_extract):
+            frame_id = cap.get(1)  # current frame number
+            ret, frame = cap.read()
+            if (ret != True):
+                break
+
+            # We are capturing at 28 frames per second.
+            # If we want to capture every 0.2 seconds we will take every 5 frames
+            if (frame_id % 16 == 0):
+                filename = "frame%d.jpg" % frame_id
+                resized = cv2.resize(frame, frame_dim)  # Reads as BGR
+                destRGB = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
+                video_frames.append(np.rot90(destRGB, 3))  # Rotate the image to an upright position
+
+        cap.release()
+        return np.array(video_frames)

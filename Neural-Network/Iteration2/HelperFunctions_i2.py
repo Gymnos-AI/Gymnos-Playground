@@ -44,7 +44,7 @@ def init_labels_csv(labels_location):
 def append_to_labels_csv(labels_location, data_path, class_number):
     """
     Appends data points to the Labels CSV
-    Ex) {'/path/file1': 0, '/path/file2': 1, '/path/file3': 2, '/path/file4': 1}
+    Ex) {'/path/file1': 0, '/path/file2': 0, '/path/file3': 1, '/path/file4': 1}
     Parameters
     ---------
     labels_location: Location of the csv labels cvs
@@ -74,7 +74,6 @@ def generate_partitions_csv(partitions_location, labels_csv):
     """
 
     # Initialize dictionaries for storting metadata of the dataset
-    count = 0  # Counts the current frame we are on
     train = []
     validation = []
     test = []
@@ -87,16 +86,17 @@ def generate_partitions_csv(partitions_location, labels_csv):
 
     # Break the data into Partitions for train, validation and test
     dataset_size = len(data)
-    training_size = math.floor(dataset_size * 0.70)  # 70% frames are for training
+    training_size = math.floor(dataset_size * 0.70)  # 70% of videos are for training
     validation_size = math.floor(dataset_size * 0.20)  # 20% are for validation
 
-    for index, frames in data.iterrows():
+    count = 0  # Counts the current frame we are on
+    for index, video in data.iterrows():
         if count < training_size:
-            train.append(frames.Frame_ID)
+            train.append(video.Video_ID)
         elif count < (training_size + validation_size):
-            validation.append(frames.Frame_ID)
+            validation.append(video.Video_ID)
         else:  # 10% are for testing
-            test.append(frames.Frame_ID)
+            test.append(video.Video_ID)
 
         count += 1
 
