@@ -91,8 +91,8 @@ class DataGenerator(Sequence):
         :return:
         """
         # Initialization
-        X = np.empty(self.batch_size, *self.frame_dim)
-        y = np.empty(self.batch_size, dtype=int)
+        X = np.empty((self.batch_size, *self.frame_dim))
+        y = np.empty((self.batch_size), dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
