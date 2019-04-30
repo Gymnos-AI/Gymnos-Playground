@@ -43,6 +43,46 @@ class DataGenerator(Sequence):
         if self.shuffle == True:
             self.list_IDs = shuffle(self.list_IDs)
 
+    def extract_frames_from_video(self, source):
+        """
+        Extracts frames from a video
+
+        Parameters
+        ---------
+        source: The video we would like to retrieve frames from
+
+        Returns
+        ---------
+        video_frames: Frames from the video that was passed in
+        """
+        video_frames = []
+
+        cap = cv2.VideoCapture(source)  # capturing the video from the given path
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        pos = randint(0, length - 140)
+        cap.set(1, pos)
+
+        frames_to_extract = self.frames_per_video
+        frame_dim = self.frame_dim
+
+        # Pull franes from videos until we have reached the amount we want to extract
+        while cap.isOpened() and len(video_frames) < frames_to_extract:
+            frame_id = cap.get(1)  # current frame number
+            ret, frame = cap.read()
+            if (ret != True):
+                break
+
+            # We are capturing at 28 frames per second.
+            # If we want to capture every 0.2 seconds we will take every 5 frames
+            if frame_id % 14 == 0:
+                resized = cv2.resize(frame, frame_dim)  # Reads as BGR
+                destRGB = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
+                video_frames.append(np.rot90(destRGB, 3))  # Rotate the image to an upright position
+
+        cap.release()
+        return np.array(video_frames)
+
     def __data_generation(self, list_IDs_temp):
         """
         Generates batches of samples from accessing the drive. (n_samples, *dim, channels)
@@ -51,13 +91,13 @@ class DataGenerator(Sequence):
         :return:
         """
         # Initialization
-        X = np.empty((self.batch_size, *self.dim))
-        y = np.empty((self.batch_size), dtype=int)
+        X = np.empty(self.batch_size, *self.dim)
+        y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = extract_frames_from_video(ID)
+            X[i, ] = self.extract_frames_from_video(ID)
 
             # Store class
             y[i] = self.labels[ID]
@@ -83,44 +123,3 @@ class DataGenerator(Sequence):
         X, y = self.__data_generation(self.list_IDs[index * self.batch_size:(index + 1) * self.batch_size])
 
         return X, y
-
-    def extract_frames_from_directory(self, source):
-        """
-        Extracts frames from a video
-
-        Parameters
-        ---------
-        source: The video we would like to retrieve frames from
-
-        Returns
-        ---------
-        video_frames: Frames from the video that was passed in
-        """
-        video_frames = []
-
-        cap = cv2.VideoCapture(source)  # capturing the video from the given path
-        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-        pos = randint(0, length - 140)
-        cap.set(1, pos);
-
-        frames_to_extract = self.frames_per_video
-        frame_dim = self.frame_dim
-
-        # Pull franes from videos until we have reached the amount we want to extract
-        while (cap.isOpened() and len(video_frames) < frames_to_extract):
-            frame_id = cap.get(1)  # current frame number
-            ret, frame = cap.read()
-            if (ret != True):
-                break
-
-            # We are capturing at 28 frames per second.
-            # If we want to capture every 0.2 seconds we will take every 5 frames
-            if (frame_id % 16 == 0):
-                filename = "frame%d.jpg" % frame_id
-                resized = cv2.resize(frame, frame_dim)  # Reads as BGR
-                destRGB = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
-                video_frames.append(np.rot90(destRGB, 3))  # Rotate the image to an upright position
-
-        cap.release()
-        return np.array(video_frames)
