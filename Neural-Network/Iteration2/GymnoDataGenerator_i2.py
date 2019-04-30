@@ -91,7 +91,7 @@ class DataGenerator(Sequence):
         :return:
         """
         # Initialization
-        X = np.empty((self.batch_size, *self.frame_dim))
+        X = np.empty((self.batch_size, self.frames_per_video, *self.frame_dim, 3))
         y = np.empty((self.batch_size), dtype=int)
 
         # Generate data
