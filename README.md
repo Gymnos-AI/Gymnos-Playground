@@ -1,2 +1,2 @@
-# Workout-Predictor-AI
-This repository will contain all of the code related to the Workout Predictor AI. From the ML algorithm trainer, Website and Mobile apps
+# Gymnos Repo
+- This is a repository to encapsulate all of the Gymnos products.
