@@ -104,7 +104,8 @@ class DataGenerator(Sequence):
 
         cap = cv2.VideoCapture(source)  # capturing the video from the given path
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        pos = randint(0, length - (self.frame_strides * self.frames_per_video))
+        # Length -50 because frame count may be off
+        pos = randint(0, ((length - 50) - (self.frame_strides * self.frames_per_video)))
         cap.set(1, pos)  # Start at a random position in the video
 
         # Pull frames from videos until we have reached the amount we want to extract
@@ -112,11 +113,11 @@ class DataGenerator(Sequence):
             frame_id = cap.get(1)  # Get current frame number
             ret, frame = cap.read()
             if ret != True:
-                break
+                cap.set(1, 0)  # If we hit the end start grabbing from the start again
 
             # We are capturing at 28 frames per second.
             # If we want to capture every 0.2 seconds we will set frame_strides = 6
-            if frame_id % self.frame_strides == 0:
+            elif frame_id % self.frame_strides == 0:
                 resized = cv2.resize(frame, self.frame_dim)  # Reads as BGR
                 dest_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
                 video_frames.append(np.rot90(dest_rgb, 3))  # Rotate the image to an upright position
