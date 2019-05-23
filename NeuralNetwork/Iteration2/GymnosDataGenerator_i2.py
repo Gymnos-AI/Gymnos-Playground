@@ -104,9 +104,13 @@ class DataGenerator(Sequence):
 
         cap = cv2.VideoCapture(source)  # capturing the video from the given path
         length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        # Length -50 because frame count may be off
-        pos = randint(0, ((length - 50) - (self.frame_strides * self.frames_per_video)))
-        cap.set(1, pos)  # Start at a random position in the video
+        # If the video is longer than 8 seconds, start at a random position in the video
+        if length > 180:
+            pos = randint(0, ((length - 50) - (self.frame_strides * self.frames_per_video)))
+            cap.set(1, pos)
+        # Start at the beginning
+        else:
+            cap.set(1, 0)
 
         # Pull frames from videos until we have reached the amount we want to extract
         while cap.isOpened() and len(video_frames) < self.frames_per_video:
