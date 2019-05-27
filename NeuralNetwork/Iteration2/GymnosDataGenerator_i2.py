@@ -4,16 +4,16 @@ import csv
 import cv2
 import keras
 from keras.preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from tensorflow.python.keras.utils.data_utils import Sequence
 from random import randint
+import keras.utils.data_utils import get_file
 
 
 class DataGenerator(Sequence):
-    def __init__(self, list_IDs, labels, frames_per_video, frame_strides, frame_dim, batch_size, n_classes, shuffle=True):
+    def __init__(self, list_IDs, labels, frame_strides, batch_size, n_classes, frames_per_video=16, frame_dim=(128, 171), shuffle=True):
         """
           Initialization
 
@@ -34,6 +34,15 @@ class DataGenerator(Sequence):
         self.batch_size = batch_size
         self.n_classes = n_classes
         self.shuffle = shuffle
+
+        # Get the mean of all videos used by Sports 1M
+        mean_path = get_file('c3d_mean.npy',
+                             'https://github.com/adamcasson/c3d/releases/download/v0.1/c3d_mean.npy',
+                             cache_subdir='models',
+                             md5_hash='08a07d9761e76097985124d9e8b2fe34')
+
+        self.mean_vid = np.load(mean_path)
+
         self.on_epoch_end()
 
     def on_epoch_end(self):
@@ -75,18 +84,23 @@ class DataGenerator(Sequence):
         :return y: One-hot encoding of the labels
         """
         # Initialization
-        X = np.empty((self.batch_size, self.frames_per_video, *self.frame_dim, 3))
+        X = np.empty((self.batch_size, self.frames_per_video, 112, 112, 3))
         y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i, ] = self.extract_frames_from_video(ID)
+            # Subtract mean from sample
+            sample = self.extract_frames_from_video(ID) - self.mean_vid
+            # Resize to 112 by 112
+            resized = cv2.resize(sample, (112, 112))
+            dest_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
+            X[i, ] = dest_rgb  # Reads as BGR
 
             # Store class
             y[i] = self.labels[ID]
 
-        return preprocess_input(X, mode='tf'), keras.utils.to_categorical(y, num_classes=self.n_classes)
+        return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
 
     def extract_frames_from_video(self, source):
         """
