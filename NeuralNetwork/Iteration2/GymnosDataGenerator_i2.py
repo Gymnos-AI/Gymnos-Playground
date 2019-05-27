@@ -91,11 +91,15 @@ class DataGenerator(Sequence):
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
             # Subtract mean from sample
-            sample = self.extract_frames_from_video(ID) - self.mean_vid
-            # Resize to 112 by 112
-            resized = cv2.resize(sample, (112, 112))
-            dest_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)  # Convert to RGB
-            X[i, ] = dest_rgb  # Reads as BGR
+            samples = self.extract_frames_from_video(ID) - self.mean_vid
+            # Resize all frames to 112 by 112
+            resized = []
+            for frame in samples:
+                resized_frame = cv2.resize(frame, (112, 112))
+                resized.append(resized_frame)
+
+            # Add video to the batch
+            X[i, ] = np.array(resized)
 
             # Store class
             y[i] = self.labels[ID]
