@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from tensorflow.python.keras.utils.data_utils import Sequence
 from random import randint
-import keras.utils.data_utils import get_file
+from keras.utils.data_utils import get_file
 
 
 class DataGenerator(Sequence):
