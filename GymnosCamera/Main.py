@@ -1,4 +1,4 @@
-import GymnosCamera.PiCameraMain as piCode
+import PiCameraMain as piCode
 
 piCam = piCode.PiCameraMain()
 

@@ -12,7 +12,7 @@ class PiCameraMain:
 		self.IM_WIDTH = 640
 		self.IM_HEIGHT = 480
 		self.camera = PiCamera()
-		self.rawCapture = PiRGBArray(camera, size=(self.IM_WIDTH, self.IM_HEIGHT))
+		self.rawCapture = PiRGBArray(self.camera, size=(self.IM_WIDTH, self.IM_HEIGHT))
 
 		self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 		self.camera.resolution = (self.IM_WIDTH, self.IM_HEIGHT)
