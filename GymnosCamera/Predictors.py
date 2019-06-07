@@ -3,13 +3,14 @@ import cv2
 
 
 class Predictors:
-    def __init__(self):
-        self.hog = cv2.HOGDescriptor()
-        self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+    def __init__(self, model_type):
+        if model_type == 'HOG':
+            self.hog = cv2.HOGDescriptor()
+            self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
     def hog_detector(self, to_predict):
         """
-        Takes in a frame, runs it through a model and returns the results
+        Takes in a frame, runs it through the HOG Detector  and returns the results
 
         :param to_predict: The frame passed into the model
         :return: frame after it is processed

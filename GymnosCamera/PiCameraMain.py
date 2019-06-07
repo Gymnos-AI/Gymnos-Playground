@@ -19,9 +19,7 @@ class PiCameraMain:
         time.sleep(0.1)
 
         # initialize the Predictors
-        self.predictor = Predictors.Predictors()
-
-
+        self.predictor = Predictors.Predictors('HOG')
 
     def run_loop(self):
         """

@@ -6,7 +6,7 @@ try:
 except ImportError:
     print('No PiCamera available, setting as usb device')
     camera_type = 'usb'
-    import GymnosCamera.UsbCameraMain as usbCam
+    import UsbCameraMain as usbCam
 
 import argparse
 
