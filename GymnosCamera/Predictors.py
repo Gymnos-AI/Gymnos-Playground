@@ -25,4 +25,12 @@ class Predictors:
         return to_predict
 
     def yolo_v3_detector(self, to_predict):
+        """
+        Before you run the YOLO Detector, download the models from:
+        https://drive.google.com/drive/folders/1fibgr4c2CUMItWOngjTxwhqSzsHXBXvT
+        and place it into /GymnosCamera/YoloNetwork/model_data
+
+        :param to_predict: frame we would like to run prediction on
+        :return:
+        """
         return np.asarray(self.model.detect_image(to_predict))

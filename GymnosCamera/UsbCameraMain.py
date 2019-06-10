@@ -8,8 +8,8 @@ class UsbCameraMain:
     def __init__(self):
         # initialize the camera
         self.camera = cv2.VideoCapture(0)
-        self.camera_height = 256
-        self.camera_width = 256
+        self.camera_height = 128
+        self.camera_width = 128
 
         # initialize the Predictors
         self.predictor = Predictors.Predictors('YOLOV3')
