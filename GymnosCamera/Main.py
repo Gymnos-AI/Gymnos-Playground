@@ -10,6 +10,7 @@ except ImportError:
 
 import argparse
 
+
 # Select camera type (if user enters --usbcam when calling this script,
 # a USB webcam will be used)
 parser = argparse.ArgumentParser()
