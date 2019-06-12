@@ -8,8 +8,8 @@ import Predictors
 class PiCameraMain:
     def __init__(self):
         # initialize the HOG descriptor/person detector
-        self.IM_WIDTH = 640
-        self.IM_HEIGHT = 480
+        self.IM_WIDTH = 128
+        self.IM_HEIGHT = 128
         self.camera = PiCamera()
         self.rawCapture = PiRGBArray(self.camera, size=(self.IM_WIDTH, self.IM_HEIGHT))
         self.camera.resolution = (self.IM_WIDTH, self.IM_HEIGHT)
@@ -19,7 +19,7 @@ class PiCameraMain:
         time.sleep(0.1)
 
         # initialize the Predictors
-        self.predictor = Predictors.Predictors('HOG')
+        self.predictor = Predictors.Predictors('YOLOV3')
 
     def run_loop(self):
         """
@@ -31,7 +31,9 @@ class PiCameraMain:
             image = frame.array
 
             # Pass frame into the model
-            image = self.predictor.hog_detector(image)
+            list_of_coords = self.predictor.yolo_v3_detector(image)
+            for (topX, leftY, bottomX, rightY) in list_of_coords:
+                cv2.rectangle(image, (topX, leftY), (bottomX, rightY), (0, 0, 255), 2)
 
             # show the output images
             cv2.imshow("Video Feed", image)
