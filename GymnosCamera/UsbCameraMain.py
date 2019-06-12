@@ -1,4 +1,5 @@
 # Continuously capture frames and perform object detection on them
+import time
 import cv2
 import Predictors
 import numpy as np
@@ -12,7 +13,8 @@ CAMERA_MACHINES = {
 }
 
 CURRENT_LOCATION = "Main Floor"
-iou_threshold = 0.01  
+iou_threshold = 0.01
+time_threshold = 2      # how many seconds until machine is sure you are in or out  
 
 class UsbCameraMain:
     def __init__(self):
@@ -21,6 +23,22 @@ class UsbCameraMain:
         self.camera_height = 512
         self.camera_width = 512
         self.time_used = {
+            "Squat-Rack":0,
+            "Bench":0
+        }
+        self.inside = {
+            "Squat-Rack":False,
+            "Bench":False
+        }
+        self.using = {
+            "Squat-Rack":False,
+            "Bench":False
+        }
+        self.time_changed = {
+            "Squat-Rack":0,
+            "Bench":0
+        }
+        self.time_elapsed = {
             "Squat-Rack":0,
             "Bench":0
         }
@@ -51,14 +69,31 @@ class UsbCameraMain:
 
                 # display machine areas
                 cv2.rectangle(image, (topX, leftY), (bottomX, rightY), (0, 255, 0), 1)
-                cv2.putText(image,name + " " + str(self.time_used[name] / 30) + "s",(topX,(int)((leftY+rightY)/2)), font, 1,(0,255,0),2,cv2.LINE_AA)
+                cv2.putText(image,name + " " + str(self.time_used[name]) + "s",(topX,(int)((leftY+rightY)/2)), font, 1,(0,255,0),2,cv2.LINE_AA)
 
                 # calculate iou for boxes
                 for (HtopX, HleftY, HbottomX, HrightY) in list_of_coords:
                     if calculate_iou((topX, leftY, bottomX, rightY), (HtopX, HleftY, HbottomX, HrightY)) > iou_threshold:
                         # Count seconds somebody is in the machine
-                        cv2.rectangle(image, (topX, leftY), (bottomX, rightY), (0, 255, 0), 3)
-                        self.time_used[name] = self.time_used[name] + 1
+                        if self.using[name]:
+                            cv2.rectangle(image, (topX, leftY), (bottomX, rightY), (0, 255, 0), 3)
+                        if self.inside[name]:
+                            diff = time.time() - self.time_changed[name]
+                            if diff > time_threshold:
+                                self.using[name] = True
+                                self.time_elapsed[name] = self.time_changed[name]
+                        else:
+                            self.inside[name] = True
+                            self.time_changed[name] = time.time()
+                    else:
+                        if self.inside[name]:
+                            self.inside[name] = False
+                            self.time_changed[name] = time.time()
+                        else:
+                            diff = time.time() - self.time_changed[name]
+                            if diff > time_threshold and self.using[name]:
+                                self.using[name] = False
+                                self.time_used[name] += time.time() - self.time_elapsed[name] - time_threshold
 
             image = np.asarray(image)
             image = cv2.resize(image, (900, 900))
