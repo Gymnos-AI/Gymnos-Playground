@@ -11,7 +11,7 @@ from keras import backend as K
 from keras.models import load_model
 from keras.layers import Input
 
-from .model import yolo_eval, yolo_body, tiny_yolo_body
+from YoloNetwork.model import yolo_eval, yolo_body, tiny_yolo_body
 import os
 from keras.utils import multi_gpu_model
 

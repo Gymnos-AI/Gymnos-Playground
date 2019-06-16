@@ -2,6 +2,8 @@
 import cv2
 import YoloNetwork.YoloV3 as yolo
 import numpy as np
+from timeit import default_timer as timer
+
 
 class Predictors:
     def __init__(self, model_type):
@@ -18,9 +20,12 @@ class Predictors:
         :param to_predict: The frame passed into the model
         :return: frame after it is processed
         """
+        start = timer()
         (rects, weights) = self.model.detectMultiScale(to_predict, winStride=(4, 4), padding=(8, 8), scale=1.05)
         for (x, y, w, h) in rects:
             cv2.rectangle(to_predict, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        end = timer()
+        print(end - start)
 
         return to_predict
 
