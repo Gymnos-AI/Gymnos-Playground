@@ -1,11 +1,13 @@
 from flask import Flask, request, Response
+import os
+import sys
 import cv2
 import numpy as np
 import jsonpickle
 import time
+import scipy.misc
 import GymnosCamera.Predictors as pred
 from keras import backend as K
-
 
 app = Flask(__name__)
 
@@ -26,10 +28,12 @@ def test():
     r = request
     # convert string of image data to uint8
     nparr = np.fromstring(r.data, np.uint8)
-    # decode image
+    # decode image  
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-    print(img.shape)
+    #scipy.misc.imsave('image.jpg', img)
+    #img.save("image.jpg")
+    #cv2.imshow("image", img)
+    #print(img.shape)
     list_of_coords = predictor.yolo_v3_detector(img)
 
     # build a response dict to send back to client
