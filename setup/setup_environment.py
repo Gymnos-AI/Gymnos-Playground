@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 def get_database():
     try:
         engine = get_connection_from_profile()
-        log.critical("Connected to PostgreSQL database!")
+        log.warning("Connected to PostgreSQL database!")
 
     except IOError:
         log.exception("Failed to get database connection!")

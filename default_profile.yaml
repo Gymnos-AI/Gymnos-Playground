@@ -1,5 +1,5 @@
 PGHOST: db-postgresql-sfo2-67367-do-user-5087135-0.db.ondigitalocean.com
-PGDATABASE: defaultdb
+PGDATABASE: gymnos
 PGUSER: doadmin
 PGPASSWORD: d2cqtbk0md3w1r30
 PGPORT: 25060
