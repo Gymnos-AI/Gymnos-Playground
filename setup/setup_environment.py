@@ -10,13 +10,7 @@ log = logging.getLogger(__name__)
 def get_database():
     try:
         engine = get_connection_from_profile()
-        print(engine)
-        connection = engine.connect()
         log.info("Connected to PostgreSQL database!")
-        query = "INSERT INTO Timestamps VALUES ('06-21-2018', '(06-22-2019)')"
-        result = connection.execute(query)
-        print(result)
-        result.close()
 
     except IOError:
         log.exception("Failed to get database connection!")
