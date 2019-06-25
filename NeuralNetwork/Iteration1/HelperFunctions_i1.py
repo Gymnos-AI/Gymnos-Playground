@@ -29,15 +29,15 @@ def extract_frames_from_directory(count, source, destination):
         cap = cv2.VideoCapture(video_file)   # capturing the video from the given path
         dim = (224, 224)
 
-        while(cap.isOpened()):
-            frame_id = cap.get(1)  #current frame number
+        while cap.isOpened():
+            frame_id = cap.get(1)  # current frame number
             ret, frame = cap.read()
-            if (ret != True):
+            if not ret:
                 break
 
             # We are capturing at 28 frames per second. 
             # If we want to capture every 0.2 seconds we will take every 5 frames
-            if (frame_id % 8 == 0):
+            if frame_id % 8 == 0:
                 filename ="frame%d.jpg" % count
                 count+=1
                 resized = cv2.resize(frame, dim)
