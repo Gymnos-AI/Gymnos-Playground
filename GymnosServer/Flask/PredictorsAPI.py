@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from flask import Flask, request, Response
 
-import GymnosCamera.Predictors as pred
+import gymnoscamera.Predictors as pred
 
 app = Flask(__name__)
 config = tf.ConfigProto()

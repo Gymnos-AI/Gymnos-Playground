@@ -3,7 +3,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import time
-from GymnosCamera import Predictors
+import Predictors
 
 
 class PiCameraMain:

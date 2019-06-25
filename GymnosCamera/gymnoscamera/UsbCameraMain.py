@@ -2,7 +2,7 @@
 import time
 import cv2
 import numpy as np
-from GymnosCamera import Predictors
+import Predictors
 
 # TODO: Fetch this from a json file, currently being mocked with this dict
 CAMERA_MACHINES = {

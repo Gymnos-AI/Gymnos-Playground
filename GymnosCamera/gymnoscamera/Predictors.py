@@ -1,6 +1,6 @@
 # Continuously capture frames and perform object detection on them
 import cv2
-import GymnosCamera.YoloNetwork.YoloV3 as yolo
+import gymnoscamera.YoloNetwork.YoloV3 as yolo
 import numpy as np
 from timeit import default_timer as timer
 

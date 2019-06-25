@@ -2,11 +2,11 @@ camera_type = 'picamera'
 
 # import the necessary packages
 try:
-    import PiCameraMain as piCam
+    import gymnoscamera.PiCameraMain as piCam
 except ImportError:
     print('No PiCamera available, setting as usb device')
     camera_type = 'usb'
-    import UsbCameraMain as usbCam
+    import gymnoscamera.UsbCameraMain as usbCam
 
 import argparse
 
