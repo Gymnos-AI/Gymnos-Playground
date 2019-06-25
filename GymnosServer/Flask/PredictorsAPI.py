@@ -6,6 +6,7 @@ from flask import Flask, request, Response
 
 import GymnosCamera.Predictors as pred
 
+# configure tensorflow graph
 app = Flask(__name__)
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -14,17 +15,7 @@ predictor = pred.Predictors('YOLOV3')
 graph = tf.get_default_graph()
 
 
-@app.route('/hello', methods=['GET'])
-def helloIndex():
-    return 'Hello World from Python Flask!'
-
-
-@app.route('/whothis', methods=['GET'])
-def whoIndex():
-    return 'YOOOO'
-
-
-# route http posts to this method
+# route when user posts an image
 @app.route('/yolov3', methods=['POST'])
 def test():
     global graph
