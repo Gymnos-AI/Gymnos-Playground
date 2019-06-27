@@ -1,0 +1,17 @@
+# Developer environments
+.idea
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Python virtual environments
+env/
+venv/
+wvenv/
+
+# Model data
+yolo.h5
+
+# Node
+node_modules/

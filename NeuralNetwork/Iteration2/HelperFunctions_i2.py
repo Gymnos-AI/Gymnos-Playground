@@ -1,11 +1,11 @@
-import cv2  # for capturing videos
-import math  # for mathematical operations
-import matplotlib.pyplot as plt  # for plotting the images
 import csv
+import math  # for mathematical operations
+import os
+
+import matplotlib.pyplot as plt  # for plotting the images
+import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
-import numpy as np
-import os
 
 
 def standardize_file_names(source):
@@ -34,7 +34,7 @@ def init_labels_csv(labels_location):
     labels_location: Location to create csv file
     ex) /content/drive/My Drive/GYMNOS/Video Dataset/labels.csv
     """
-    # Initilize the Csv we will store our labels
+    # Initialize the Csv we will store our labels
     with open(labels_location, mode='w') as csv_file:
         fieldnames = ['Video_ID', 'Class']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -51,7 +51,7 @@ def append_to_labels_csv(labels_location, data_path, class_number):
     data_path: Path to data you want to label
     class_number: Label you would like to give each data point in the Path
     """
-    # Initilize the Csv we will store our labels
+    # Initialize the Csv we will store our labels
     videos = []
     for vid in os.listdir(data_path):
         videos.append(data_path + vid)

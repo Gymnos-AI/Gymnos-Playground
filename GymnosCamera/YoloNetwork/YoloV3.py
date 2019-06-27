@@ -11,19 +11,19 @@ from keras import backend as K
 from keras.models import load_model
 from keras.layers import Input
 
-from YoloNetwork.model import yolo_eval, yolo_body, tiny_yolo_body
+from GymnosCamera.YoloNetwork.model import yolo_eval, yolo_body, tiny_yolo_body
 import os
 from keras.utils import multi_gpu_model
 
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'YoloNetwork/model_data/yolo.h5',
-        "anchors_path": 'YoloNetwork/model_data/yolo_anchors.txt',
-        "classes_path": 'YoloNetwork/model_data/coco_classes.txt',
+        "model_path": 'GymnosCamera/YoloNetwork/model_data/yolo.h5',
+        "anchors_path": 'GymnosCamera/YoloNetwork/model_data/yolo_anchors.txt',
+        "classes_path": 'GymnosCamera/YoloNetwork/model_data/coco_classes.txt',
         "score": 0.3,
         "iou": 0.45,
-        "model_image_size": (416, 416),
+        "model_image_size": (256, 256),
         "gpu_num": 1,
     }
 
@@ -132,11 +132,11 @@ class YOLO(object):
                 left = max(0, np.floor(left + 0.5).astype('int32'))
                 bottom = min(image_height, np.floor(bottom + 0.5).astype('int32'))
                 right = min(image_width, np.floor(right + 0.5).astype('int32'))
-                #print(label, (left, top), (right, bottom))
+                # print(label, (left, top), (right, bottom))
                 list_of_coords.append((left + i, top + i, right - i, bottom - i))
 
-        end = timer()
-        #print(end - start)
+        # end = timer()
+        # print(end - start)
         return list_of_coords
 
 
