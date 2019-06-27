@@ -1,5 +1,6 @@
 import pandas_gbq
 import pandas as pd
+from tqdm import tqdm
 
 # name of google BIG QUERY project
 project_id = 'gymnos-243001'
@@ -10,8 +11,7 @@ def getTime():
 
 def insert(value):
     # perform insert into database
-    pandas_gbq.to_gbq(value, 'gymnos.records', project_id=project_id, if_exists='append')
-    print('done')
+    pandas_gbq.to_gbq(value, 'gymnos.records', project_id=project_id, if_exists='append', progress_bar=True)
 
 
 def getAll():
