@@ -19,7 +19,7 @@ from keras.utils import multi_gpu_model
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'model_data/yolo.h5',
+        "model_path": None,
         "anchors_path": 'model_data/yolo_anchors.txt',
         "classes_path": 'model_data/coco_classes.txt',
         "score": 0.3,
@@ -39,10 +39,8 @@ class YOLO(object):
         self.__dict__.update(self._defaults)  # set up default values
         self.__dict__.update(kwargs)  # and update with user overrides
 
-        filename = os.path.join(__file__, "..", "model_data", "yolo.h5")
-        if not os.path.isfile(filename):
-            print("Downloading yolo weights file...")
-            urllib.request.urlretrieve("https://pjreddie.com/media/files/yolov3.weights", filename)
+        if not self.model_path:
+            raise ValueError("Argument 'model_path' must be overridden to use YoloV3!")
 
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
@@ -64,7 +62,8 @@ class YOLO(object):
         return np.array(anchors).reshape(-1, 2)
 
     def generate(self):
-        model_path = os.path.expanduser(os.path.join(__file__, "..", self.model_path))
+        # Model path is supplied externally
+        model_path = os.path.expanduser(self.model_path)
         assert model_path.endswith('.h5'), 'Keras model or weights must be a .h5 file.'
 
         # Load model, or construct model and load weights.

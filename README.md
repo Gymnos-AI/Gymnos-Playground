@@ -1,6 +1,11 @@
 # Gymnos Repo
 - This is a repository to encapsulate all of the Gymnos products.
 
+### Modularity Notes
+The GymnosCamera (gymnoscamera) sub-module should be split into a separate repository
+as it acts like a library for GymnosServer and a full-fledged system for USB web cam
+or Pi camera capable devices.
+
 ## Setting up a Virtual Environment
 
 ### Windows Setup:

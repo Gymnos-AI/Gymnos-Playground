@@ -3,7 +3,7 @@
 --extra-index-url http://thefirstjedi.asuscomm.com:3141/fernando/dev/+simple
 
 # Gymnos packages
-gymnoscamera
+gymnoscamera==0.2
 
 # Pypi packages
 absl-py==0.7.1

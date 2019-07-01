@@ -6,12 +6,12 @@ from timeit import default_timer as timer
 
 
 class Predictors:
-    def __init__(self, model_type):
+    def __init__(self, model_type, model_path: str):
         if model_type == 'HOG':
             self.model = cv2.HOGDescriptor()
             self.model.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
         elif model_type == "YOLOV3":
-            self.model = yolo.YOLO()
+            self.model = yolo.YOLO(model_path=model_path)
 
     def hog_detector(self, to_predict):
         """
