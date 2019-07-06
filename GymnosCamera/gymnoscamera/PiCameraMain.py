@@ -3,11 +3,11 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import time
-from GymnosCamera import Predictors
+import Predictors
 
 
 class PiCameraMain:
-    def __init__(self):
+    def __init__(self, model_path: str):
         # initialize the HOG descriptor/person detector
         self.IM_WIDTH = 128
         self.IM_HEIGHT = 128
@@ -20,7 +20,7 @@ class PiCameraMain:
         time.sleep(0.1)
 
         # initialize the Predictors
-        self.predictor = Predictors.Predictors('YOLOV3')
+        self.predictor = Predictors.Predictors('YOLOV3', model_path)
 
     def run_loop(self):
         """

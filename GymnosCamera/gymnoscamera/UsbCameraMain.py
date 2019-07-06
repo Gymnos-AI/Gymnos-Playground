@@ -1,9 +1,9 @@
 # Continuously capture frames and perform object detection on them
-import time
 import cv2
 import numpy as np
-from GymnosCamera import Predictors
-from GymnosCamera import Machine
+
+import Machine
+import Predictors
 
 # TODO: Fetch this from a json file, currently being mocked with this dict
 CAMERA_MACHINES = {
@@ -19,14 +19,14 @@ time_threshold = 2  # how many seconds until machine is sure you are in or out
 
 
 class UsbCameraMain:
-    def __init__(self):
+    def __init__(self, model_path: str):
         # initialize the camera
         self.camera = cv2.VideoCapture(0)
         self.camera_height = 256
         self.camera_width = 256
 
         # initialize the Predictor
-        self.predictor = Predictors.Predictors('YOLOV3')
+        self.predictor = Predictors.Predictors('YOLOV3', model_path)
 
         # initialize stations
         self.stations = []

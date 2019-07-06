@@ -1,17 +1,26 @@
+import argparse
+import os
+
 import cv2
 import jsonpickle
 import numpy as np
 import tensorflow as tf
 from flask import Flask, request, Response
 
-import GymnosCamera.Predictors as pred
+import gymnoscamera.Predictors as pred
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--model', help='A file path to a model file',
+                    action='store', required=True)
+args = parser.parse_args()
+model_path = os.path.abspath(args.model)
 
 # configure tensorflow graph
 app = Flask(__name__)
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 session = tf.Session(config=config)
-predictor = pred.Predictors('YOLOV3')
+predictor = pred.Predictors('YOLOV3', model_path)
 graph = tf.get_default_graph()
 
 
