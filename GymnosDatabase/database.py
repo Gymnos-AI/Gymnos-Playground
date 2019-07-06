@@ -18,7 +18,7 @@ def getAll():
     # loads database
     df = pandas_gbq.read_gbq('SELECT * FROM gymnos.records', project_id=project_id, dialect="legacy")
     # retrieve values
-    return df.head()
+    return df
 
 
 def main():
@@ -30,7 +30,8 @@ def main():
         'out_frame': getTime()
     })
 
-    insert(value)
+    print(getAll())
+    #insert(value)
 
 
 if __name__ == '__main__':

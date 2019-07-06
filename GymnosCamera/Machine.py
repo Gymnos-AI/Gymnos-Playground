@@ -1,5 +1,6 @@
 import time
 import cv2
+import GymnosDatabase.database as db
 
 
 class Machine:
