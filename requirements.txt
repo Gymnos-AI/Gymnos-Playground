@@ -1,6 +1,7 @@
 
 --trusted-host thefirstjedi.asuscomm.com
---extra-index-url http://thefirstjedi.asuscomm.com:3141/fernando/dev/+simple
+--index-url http://thefirstjedi.asuscomm.com:3141/gymnos/stable/+simple
+--extra-index-url http://thefirstjedi.asuscomm.com:3141/gymnos/staging/+simple
 
 # Gymnos packages
 gymnoscamera==0.2
