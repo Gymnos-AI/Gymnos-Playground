@@ -1,10 +1,6 @@
 # Gymnos Repo
 - This is a repository to encapsulate all of the Gymnos products.
-
-### Modularity Notes
-The GymnosCamera (gymnoscamera) sub-module should be split into a separate repository
-as it acts like a library for GymnosServer and a full-fledged system for USB web cam
-or Pi camera capable devices.
+- GymnosCamera has its own repo now: https://github.com/JamesPeralta/GymnosCamera
 
 ## Setting up a Virtual Environment
 
@@ -45,4 +41,4 @@ or Pi camera capable devices.
 ## Run the systems
 
 To run the camera, run either `run-camera.bat` or `run-camera.sh` according to your environment.
-Make sure to have a virtual environment activated!
+Make sure to have a virtual environment activated and the gymnoscamera package installed!
