@@ -37,7 +37,17 @@
     ```
     pip install -r requirements.txt
     ```
+2) Install Tensorflow. Depending on your computer choose **a)** or **b)**
 
+    a) If your computer does not have a NVIDIA GPU
+    ```
+    tensorflow==1.14.0
+    ```
+    b) If your computer has a NVIDIA GPU
+    ```
+    tensorflow-gpu==1.14.0
+    ```
+    
 ## Run the systems
 
 To run the camera, run either `run-camera.bat` or `run-camera.sh` according to your environment.
