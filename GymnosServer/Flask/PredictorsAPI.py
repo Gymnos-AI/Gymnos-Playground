@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from flask import Flask, request, Response
 
-import gymnoscamera.Predictors as pred
+import gymnoscamera.predictors as pred
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', help='A file path to a model file',
