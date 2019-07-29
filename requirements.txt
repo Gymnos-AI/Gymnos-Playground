@@ -4,7 +4,8 @@
 --extra-index-url http://thefirstjedi.asuscomm.com:3141/gymnos/staging/+simple
 
 # Gymnos packages
-gymnoscamera==0.3
+gymnoscamera==0.4.1
+gymnosfirestoreapi==0.1.2
 
 # Pypi packages
 Click==7.0
